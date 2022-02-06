@@ -2,15 +2,16 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 import Setup from './Setup';
 
-export default function Content({ db }) {
+export default function Content(props) {
+    
     return (
         <Switch>
             <Route exact path="/">
-                <Setup db={db}/>
+                <Setup me={props.me} onMeUpdate={props.onMeUpdate}/>
                 {/* Friend list if set up*/}
             </Route>
             <Route path="/account">
-                {/* Setup page but without intro text */}
+                <Setup me={props.me} onMeUpdate={props.onMeUpdate}/>
             </Route>
         </Switch>
     );

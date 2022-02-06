@@ -1,41 +1,29 @@
 import './App.css';
 import Header from './Header';
 import Content from './Content';
+import { initMe, updateMe } from './me';
 import Dexie from 'dexie'
+import React, { useEffect, useState } from "react";
 
 function App() {
-  const db = new Dexie('me');
+  const [me, setMe] = useState({});
+  const db = useState(new Dexie('direct'))[0];
 
-  // create the store
-  db.version(1).stores({ formData: 'id,value' })
+  
+  useEffect(() => {
+    // Initialize on DB connect
+    initMe(db, setMe);
+  }, [db]);
+
+  // Update me in DB and state
+  const onMeUpdate = me => { updateMe(db, me, setMe) };
 
   return (
     <div className="App">
-      <Header />
-      <Content db={db} />
+      <Header me={me}/>
+      <Content me={me} onMeUpdate={onMeUpdate} />
     </div>
   );
 }
+
 export default App;
-
-
-// import React, { useState } from 'react'
-// import Dexie from 'dexie'
-
-// import Form from './Form'
-
-// const App = () => {
-//   const [open, setOpen] = useState(true)
-
-//   return (
-//     <div style={{ margin: '2rem auto', width: '200px' }}>
-//       <button onClick={() => setOpen(!open)}>{`${
-//         open ? 'Close' : 'Open'
-//       } Form`}</button>
-//       {/* Pass in a new connection to the database when Form is first rendered */}
-//       {open && <Form db={new Dexie('FormDatabase')} />}
-//     </div>
-//   )
-// }
-
-// export default App

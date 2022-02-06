@@ -1,7 +1,8 @@
 import { AppBar, Toolbar, Link, makeStyles, Button } from "@material-ui/core";
 import { CallToAction } from "@material-ui/icons";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import {connectFriendRequest} from "./friendrequest";
 
 const useStyles = makeStyles(() => ({
     toolbar: {
@@ -32,9 +33,23 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-export default function Header() {
+export default function Header(props) {
 
     const { toolbar, header, title, menuButtons, logo, height } = useStyles();
+
+
+    useEffect(() => {
+        console.log("connection: ", props.me);
+       const b = connectFriendRequest(props.me, function(args, cb){
+            console.log("got passphrase",args.passphrase);
+            cb(true);
+        });
+        
+        return () => {
+            if (!b) {return}
+            b.close()
+        }
+      });
 
     const displayDesktop = () => {
         return <Toolbar className={toolbar}>
@@ -76,7 +91,7 @@ export default function Header() {
 
     return (
         <div className={height}>
-        <AppBar className={header}>{displayDesktop()}</AppBar>
+            <AppBar className={header}>{displayDesktop()}</AppBar>
         </div>
     );
 }
